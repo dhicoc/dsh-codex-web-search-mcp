@@ -20,32 +20,56 @@ OpenAI Codex / Grok 联网搜索与深度研究 MCP server，Rust 独立二进�
 
 ## 前置条件（重要）
 
-本插件依赖 `codex-web-search-mcp` 这个 npm 包来分发跨平台二进制。它（以及其下的
-5 个平台二进制包 `@dhicoc/codex-web-search-mcp-*`）**需要先在 npm 发布**后才能
-`dsh plugin add` 一键安装。
+本插件依赖以下已发布到 npm 的包来分发跨平台二进制：
 
-- 二进制分发包源码在 [`dhicoc/codex-web-search-mcp`](https://github.com/dhicoc/codex-web-search-mcp)
-  （`codex-web-search-mcp` 根包 + `npm/platforms/*` 下的 5 个平台子包；跨平台预编译二进制
-  发布在它的 GitHub Releases v2.3.1）。
-- 发布步骤见下方「发布二进制包」。
+- `@dhicoc/dsh-codex-web-search-mcp`：本 dsh 插件；
+- `codex-web-search-mcp`：跨平台命令及其平台二进制依赖；
+- `@dhicoc/codex-web-search-mcp-*`：各平台的预编译二进制包。
 
-未发布前想本地验证，可用 `link:` 依赖（见「本地测试」）。
+正常使用时不需要手动安装这些依赖，`dsh plugin` 会自动解析并安装它们。
+二进制分发包源码在
+[`dhicoc/codex-web-search-mcp`](https://github.com/dhicoc/codex-web-search-mcp)，
+发布维护流程见下方「发布二进制包」。
 
 ---
 
 ## 安装
 
+### npm 发布版（推荐）
+
 ```bash
-# 一键安装并注册到 web profile
-dsh plugin --profile web add github:dhicoc/dsh-codex-web-search-mcp
+# 安装已发布的 npm 版本，并注册到 web profile
+dsh plugin --profile web add @dhicoc/dsh-codex-web-search-mcp
 
 # 重启 dsh web 生效（Web bundle 无 HMR，必须重启进程）
 dsh web
 ```
 
-装好后用 `dsh --profile web --dump-config` 检查是否已出现
-`mcp-codex-web-search` 这一行；在会话里让 agent 调用
-`codex_web_search` / `codex_web_research` / `web_fetch` 即可。
+安装后验证：
+
+```bash
+dsh --profile web --dump-config
+```
+
+输出中应出现 `mcp-codex-web-search`，并包含 `serverName: codex-web-search` 和
+`command: codex-web-search-mcp`。在会话中即可让 agent 调用
+`codex_web_search` / `codex_web_research` / `web_fetch`。
+
+> 如果默认 npm 镜像提示 `404 Not Found`，通常表示镜像尚未同步新包。可临时指定
+> npm 官方 registry 重试：
+>
+> ```bash
+> dsh plugin --profile web add @dhicoc/dsh-codex-web-search-mcp --registry=https://registry.npmjs.org
+> ```
+
+### 从 GitHub 安装（开发/预发布）
+
+只有在测试仓库中尚未发布的提交时才使用 GitHub 源：
+
+```bash
+dsh plugin --profile web add github:dhicoc/dsh-codex-web-search-mcp
+dsh web
+```
 
 ### 凭证（二选一）
 
@@ -60,23 +84,23 @@ dsh web
 
 ## 本地测试（未发布 npm 包时）
 
-```bash
-# 在 web profile 内用 link: 指向本地二进制包 + 本插件
-dsh plugin --profile web add link:<本仓库绝对路径>
+如果需要测试本地源码，可在 web profile 内使用 `link:` 指向本插件仓库的绝对路径：
 
-# 或者先把二进制包 link 进本插件再 add：
-#   cd ../project_009+claude-code-search-mcp && npm link
-#   cd ../project_016+codex-web-search-dsh-plugin && npm link codex-web-search-mcp
-#   dsh plugin --profile web add link:<本仓库绝对路径>
+```bash
+dsh plugin --profile web add link:<本插件仓库绝对路径>
 dsh web
 ```
+
+如果本插件依赖的 `codex-web-search-mcp` 也尚未发布，可先在其仓库执行
+`npm link`，再在本插件仓库执行 `npm link codex-web-search-mcp`，最后安装本插件的
+`link:` 版本。普通用户不需要这些步骤，应使用上面的 npm 发布版安装方式。
 
 ---
 
 ## 卸载与还原
 
 ```bash
-dsh plugin --profile web remove dsh-codex-web-search-mcp
+dsh plugin --profile web remove @dhicoc/dsh-codex-web-search-mcp
 ```
 
 删除插件即移除 `mcp-codex-web-search` 这一行，dsh 不再加载该 MCP server，
