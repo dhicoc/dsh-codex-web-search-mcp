@@ -1,0 +1,40 @@
+# dsh-codex-web-search-mcp —— bundle layer
+#
+# 作用：把 codex-web-search-mcp（OpenAI Codex / Grok 联网搜索与深度研究 MCP
+# server，Rust 独立二进制）注册进 dsh 内置的 @deepseek-ai/dsh-mcp-client。
+# 安装并重启 `dsh web` 后，3 个工具会以原生形式出现：
+#   mcp__codex-web-search__codex_web_search
+#   mcp__codex-web-search__codex_web_research
+#   mcp__codex-web-search__web_fetch
+#
+# 工作机制：本 bundle 不是自己实现 Cordis 插件，而是借用 dsh 自带的
+# @deepseek-ai/dsh-mcp-client（已随 dsh 安装），用一行配置把它实例化成
+# 指向 codex-web-search-mcp 二进制的 stdio 服务器。serverName 即命名空间，
+# 最终工具名形如 mcp__<serverName>__<tool>。
+#
+# 二进制来源：`codex-web-search-mcp` 这个 npm 依赖（见本包 package.json）
+# 会按当前平台通过 optionalDependencies 拉取对应的预编译二进制包，并暴露
+# 一个名为 `codex-web-search-mcp` 的 bin。dsh 在 spawn MCP server 时，
+# 会把 profile 的 node_modules/.bin 加入 PATH，因此 `command` 直接用命令名即可。
+#
+# 降级方案（若你的 dsh 未把 .bin 加入 MCP spawn PATH，工具不出现时）：
+#   把 `command` 改成二进制绝对路径，例如 Windows：
+#     command: 'C:/Users/<你>/.dsh/profiles/web/node_modules/codex-web-search-mcp/bin/codex-web-search-mcp'
+#   （.exe 由 shim 自动处理，路径指向 bin/ 目录下的 shim 即可）
+#
+# 凭证（二选一，详见上游 README https://github.com/dhicoc/codex-web-search-mcp）：
+#   1) 先 `codex login`（写入 ~/.codex/auth.json），本 server 自动读取，无需配置；
+#   2) 或取消下方 env 注释，用 dsh 的环境变量引用（密钥不落盘）：
+#        CODEX_ACCESS_TOKEN: !!js process.env.CODEX_ACCESS_TOKEN
+#        CODEX_ACCOUNT_ID:  !!js process.env.CODEX_ACCOUNT_ID
+
+- insert:
+    - id: mcp-codex-web-search
+      name: '@deepseek-ai/dsh-mcp-client'
+      config:
+        serverName: codex-web-search
+        transport: stdio
+        command: codex-web-search-mcp
+        # env:
+        #   CODEX_ACCESS_TOKEN: !!js process.env.CODEX_ACCESS_TOKEN
+        #   CODEX_ACCOUNT_ID:  !!js process.env.CODEX_ACCOUNT_ID
