@@ -24,8 +24,9 @@ OpenAI Codex / Grok 联网搜索与深度研究 MCP server，Rust 独立二进�
 5 个平台二进制包 `@dhicoc/codex-web-search-mcp-*`）**需要先在 npm 发布**后才能
 `dsh plugin add` 一键安装。
 
-- 二进制分发包源码在 `../project_009+claude-code-search-mcp`（`codex-web-search-mcp` 根包
-  + `npm/platforms/*` 的子包）。
+- 二进制分发包源码在 [`dhicoc/codex-web-search-mcp`](https://github.com/dhicoc/codex-web-search-mcp)
+  （`codex-web-search-mcp` 根包 + `npm/platforms/*` 下的 5 个平台子包；跨平台预编译二进制
+  发布在它的 GitHub Releases v2.3.1）。
 - 发布步骤见下方「发布二进制包」。
 
 未发布前想本地验证，可用 `link:` 依赖（见「本地测试」）。
@@ -114,8 +115,10 @@ dsh 内置 `@deepseek-ai/dsh-mcp-client` 本就会读 `.mcp.json` / `~/.dsh/mcp.
 
 ## 发布二进制包（维护者）
 
-1. 在 `../project_009+claude-code-search-mcp` 给每个平台构建/下载二进制，
-   重命名为统一名 `bin/codex-web-search-mcp[.exe]` 后：
+> 二进制需在 `dhicoc/codex-web-search-mcp` 仓库根的 `npm/platforms/<平台>/bin/` 下就位
+> （统一名 `bin/codex-web-search-mcp[.exe]`，可从 Releases v2.3.1 下载）。再按依赖顺序发布：
+
+1. 依次发布 5 个平台子包（在 `dhicoc/codex-web-search-mcp` 仓库根执行）：
 
    ```bash
    cd npm/platforms/win32-x64 && npm publish --access public
@@ -131,10 +134,10 @@ dsh 内置 `@deepseek-ai/dsh-mcp-client` 本就会读 `.mcp.json` / `~/.dsh/mcp.
    cd ../.. && npm publish --access public
    ```
 
-3. 最后发布本插件：
+3. 最后在本插件仓库发布本插件：
 
    ```bash
-   cd ../../project_016+codex-web-search-dsh-plugin && npm publish --access public
+   npm publish --access public
    ```
 
 4. 给仓库打 `dsh-plugin` topic，自动被 awesome-dsh-plugins 收录。
