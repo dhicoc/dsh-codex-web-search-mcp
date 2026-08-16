@@ -1,6 +1,6 @@
 {
   "name": "@dhicoc/dsh-codex-web-search-mcp",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "dsh plugin: register codex-web-search-mcp (model-independent OpenAI Codex / Grok web search & deep research MCP server) as a native dsh MCP tool set (mcp__codex-web-search__*).",
   "type": "module",
   "license": "MIT",
@@ -16,11 +16,12 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/dhicoc/dsh-codex-web-search-mcp.git"
+    "url": "git+https://github.com/dhicoc/dsh-codex-web-search-mcp.git"
   },
   "files": [
     "cordis.patch.yml",
-    "README.md"
+    "README.md",
+    "index.js"
   ],
   "dsh": {
     "bundle": {
@@ -30,5 +31,7 @@
   "dependencies": {
     "@deepseek-ai/dsh-mcp-client": "0.1.0-rc.6",
     "codex-web-search-mcp": "^2.3.1"
-  }
+  },
+  "main": "./index.js",
+  "exports": "./index.js"
 }
