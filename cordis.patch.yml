@@ -14,13 +14,9 @@
 #
 # 二进制来源：`codex-web-search-mcp` 这个 npm 依赖（见本包 package.json）
 # 会按当前平台通过 optionalDependencies 拉取对应的预编译二进制包，并暴露
-# 一个名为 `codex-web-search-mcp` 的 bin。dsh 在 spawn MCP server 时，
-# 会把 profile 的 node_modules/.bin 加入 PATH，因此 `command` 直接用命令名即可。
-#
-# 降级方案（若你的 dsh 未把 .bin 加入 MCP spawn PATH，工具不出现时）：
-#   把 `command` 改成二进制绝对路径，例如 Windows：
-#     command: 'C:/Users/<你>/.dsh/profiles/web/node_modules/codex-web-search-mcp/bin/codex-web-search-mcp'
-#   （.exe 由 shim 自动处理，路径指向 bin/ 目录下的 shim 即可）
+# 一个名为 `codex-web-search-mcp` 的 bin。MCP client 不保证把 profile 的
+# node_modules/.bin 加入 PATH，因此这里直接用 dsh 当前 Node 启动该 bin 对应的 JS shim，
+# 避免依赖系统 PATH 和 Windows 的 .cmd shim 解析。
 #
 # 凭证（二选一，详见上游 README https://github.com/dhicoc/codex-web-search-mcp）：
 #   1) 先 `codex login`（写入 ~/.codex/auth.json），本 server 自动读取，无需配置；
@@ -34,7 +30,9 @@
       config:
         serverName: codex-web-search
         transport: stdio
-        command: codex-web-search-mcp
+        command: !!js process.execPath
+        args:
+          - !!js ((process.env.DSH_HOME || ((process.env.USERPROFILE || process.env.HOME) + '/.dsh')) + '/profiles/web/node_modules/codex-web-search-mcp/bin/codex-web-search-mcp.js')
         # env:
         #   CODEX_ACCESS_TOKEN: !!js process.env.CODEX_ACCESS_TOKEN
         #   CODEX_ACCOUNT_ID:  !!js process.env.CODEX_ACCOUNT_ID

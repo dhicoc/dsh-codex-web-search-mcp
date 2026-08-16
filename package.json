@@ -1,6 +1,6 @@
 {
   "name": "@dhicoc/dsh-codex-web-search-mcp",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "dsh plugin: register codex-web-search-mcp (model-independent OpenAI Codex / Grok web search & deep research MCP server) as a native dsh MCP tool set (mcp__codex-web-search__*).",
   "type": "module",
   "license": "MIT",
