@@ -34,5 +34,8 @@
     "codex-web-search-mcp": "^2.3.1"
   },
   "main": "./index.js",
-  "exports": "./index.js"
+  "exports": "./index.js",
+  "scripts": {
+    "test": "node test.mjs"
+  }
 }
