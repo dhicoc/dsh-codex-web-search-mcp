@@ -21,6 +21,7 @@
   "files": [
     "cordis.patch.yml",
     "README.md",
+    "README.en.md",
     "index.js"
   ],
   "dsh": {
