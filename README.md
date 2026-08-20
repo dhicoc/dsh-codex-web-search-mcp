@@ -1,4 +1,5 @@
 # dsh-codex-web-search-mcp
+[![Awesome DSH Plugin](https://awesome-dsh-plugin.com/badge.svg)](https://awesome-dsh-plugin.com)
 
 把 [codex-web-search-mcp](https://github.com/dhicoc/codex-web-search-mcp)（模型无关的
 OpenAI Codex / Grok 联网搜索与深度研究 MCP server，Rust 独立二进制）接进
